@@ -1,0 +1,412 @@
+/* ---- Reset & variables ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a12;
+  --accent: #e83232;
+  --accent-hover: #ff4444;
+  --text: #f0f0f8;
+  --text-sec: #8888aa;
+  --border: #1e1e36;
+  --overlay-bg: rgba(8, 8, 18, 0.92);
+  --card-bg: #13131f;
+  --card-border: #252538;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+}
+
+/* ---- Preview wrapper ---- */
+.preview-wrapper {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* ---- Camera PIP ---- */
+.camera-pip {
+  position: fixed;
+  right: 24px;
+  bottom: 100px; /* above controls bar */
+  width: 240px;
+  height: 135px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: grab;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  z-index: 50;
+  user-select: none;
+}
+.camera-pip:active { cursor: grabbing; }
+.camera-pip video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pip-drag-handle {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  color: rgba(255,255,255,0.5);
+  pointer-events: none;
+}
+
+/* ---- Preview placeholder ---- */
+.preview-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-sec);
+}
+.preview-placeholder svg { opacity: 0.3; }
+.hidden { display: none !important; }
+
+/* ---- Record indicator (top-left) ---- */
+.record-indicator {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 10, 20, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--card-border);
+  border-radius: 100px;
+  padding: 6px 14px;
+  z-index: 100;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rec-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: blink 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.rec-dot.paused {
+  background: #ff9800;
+  box-shadow: 0 0 6px #ff9800;
+  animation: none;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.rec-label {
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.rec-timer {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  min-width: 42px;
+}
+
+.mode-badge {
+  background: rgba(255,255,255,0.08);
+  padding: 2px 7px;
+  border-radius: 100px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-sec);
+}
+
+/* ---- Controls bar ---- */
+.controls-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(10, 10, 20, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: 100px;
+  padding: 8px 16px;
+  z-index: 100;
+}
+
+.ctrl-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.ctrl-pause {
+  background: rgba(255,255,255,0.1);
+  color: var(--text);
+}
+.ctrl-pause:hover { background: rgba(255,255,255,0.18); }
+
+.ctrl-stop {
+  background: var(--accent);
+  color: #fff;
+}
+.ctrl-stop:hover { background: var(--accent-hover); }
+
+.ctrl-discard {
+  background: transparent;
+  color: var(--text-sec);
+  border: 1px solid var(--card-border);
+}
+.ctrl-discard:hover { color: #ff9999; border-color: #ff4444; }
+
+/* ---- Overlays ---- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.overlay-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  min-width: 300px;
+  text-align: center;
+}
+
+/* ---- Countdown ---- */
+.countdown-number {
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  min-width: 90px;
+  text-align: center;
+  text-shadow: 0 0 30px rgba(232, 50, 50, 0.5);
+  animation: countZoom 0.9s ease-out;
+}
+@keyframes countZoom {
+  0% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.countdown-label {
+  color: var(--text-sec);
+  font-size: 14px;
+}
+
+/* ---- Status overlay ---- */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.status-message {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.overlay-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---- Save overlay ---- */
+.save-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: min(680px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.save-preview-wrapper {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16/9;
+}
+
+.save-preview {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.save-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.save-title {
+  font-size: 18px;
+  font-weight: 600;
+  outline: none;
+  cursor: text;
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+.save-title:focus {
+  background: rgba(255,255,255,0.06);
+}
+
+.save-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-sec);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.dot-sep { opacity: 0.4; }
+
+.save-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ---- Buttons ---- */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.14); }
+
+.btn-ghost {
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--text-sec);
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.btn-ghost:hover { color: var(--text); }
+
+.btn-danger {
+  padding: 10px 22px;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-danger:hover { background: #e74c3c; }
+
+/* ---- Recovery banner ---- */
+.recovery-banner {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1200;
+  border: 1px solid #ff9800;
+  border-radius: 100px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  z-index: 300;
+  color: #ffcc80;
+}
+.recovery-banner button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ff9800;
+  font-size: 13px;
+  font-weight: 600;
+}
+.recovery-banner .close-btn {
+  color: rgba(255,200,128,0.5);
+  margin-left: 4px;
+}

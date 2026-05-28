@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RecFlow – Privacy Policy</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f8fb;
+      color: #1a1a2e;
+      line-height: 1.7;
+      padding: 40px 20px 80px;
+    }
+    .wrap { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; color: #0d0d1a; }
+    .subtitle { font-size: 14px; color: #666; margin-bottom: 40px; }
+    h2 { font-size: 17px; font-weight: 700; margin: 32px 0 10px; color: #0d0d1a; }
+    p { margin-bottom: 12px; font-size: 15px; }
+    ul { margin: 8px 0 12px 20px; }
+    ul li { font-size: 15px; margin-bottom: 6px; }
+    .badge {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    footer { margin-top: 60px; font-size: 13px; color: #999; }
+    a { color: #e83232; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>RecFlow Privacy Policy</h1>
+    <p class="subtitle">Last updated: May 28, 2026</p>
+
+    <span class="badge">✓ No data collection. Everything stays on your device.</span>
+
+    <h2>Overview</h2>
+    <p>
+      RecFlow is a browser extension that lets you record your screen, browser tab, or camera.
+      <strong>RecFlow does not collect, transmit, sell, or share any personal data or recordings.</strong>
+      All data is stored locally on your device and never leaves your browser.
+    </p>
+
+    <h2>Data We Do NOT Collect</h2>
+    <ul>
+      <li>We do not collect names, email addresses, or any personal identifiers.</li>
+      <li>We do not upload recordings or video data to any server.</li>
+      <li>We do not use analytics, crash reporting, or tracking services.</li>
+      <li>We do not use cookies or any form of user profiling.</li>
+      <li>We do not communicate with any external server or remote endpoint.</li>
+    </ul>
+
+    <h2>Local Storage</h2>
+    <p>
+      RecFlow stores the following data <strong>locally in your browser only</strong> using
+      <code>chrome.storage.local</code> and <code>IndexedDB</code>:
+    </p>
+    <ul>
+      <li><strong>Recordings</strong> — video files you create are saved in your browser's IndexedDB.</li>
+      <li><strong>Preferences</strong> — your chosen recording mode, audio setting, and UI preferences.</li>
+      <li><strong>Active recording state</strong> — temporary session data used to support pause/resume and the floating control bar. Cleared when recording ends.</li>
+    </ul>
+    <p>
+      This data never leaves your browser. You can delete it at any time by removing recordings
+      from the extension or uninstalling RecFlow.
+    </p>
+
+    <h2>Permissions</h2>
+    <p>RecFlow requests the following Chrome permissions:</p>
+    <ul>
+      <li><strong>storage</strong> — to save your preferences and recording metadata locally.</li>
+      <li><strong>tabs</strong> — to open the recorder, recordings library, and floating control window in new tabs/windows, and to send control messages (pause, stop) to the active recorder tab.</li>
+      <li><strong>windows</strong> — to display a floating control bar outside the browser tab during an active recording.</li>
+    </ul>
+    <p>None of these permissions are used to access, read, or transmit your browsing data.</p>
+
+    <h2>Screen &amp; Camera Access</h2>
+    <p>
+      When you start a recording, the browser asks you to grant screen or camera access via the
+      standard browser media permissions dialog. This access is used solely to capture video
+      during that recording session. RecFlow does not retain, upload, or transmit this stream —
+      it is written directly to local storage on your device.
+    </p>
+
+    <h2>Third-Party Services</h2>
+    <p>RecFlow uses no third-party services, SDKs, analytics libraries, or remote APIs of any kind.</p>
+
+    <h2>Children's Privacy</h2>
+    <p>RecFlow is not directed at children under 13 and does not knowingly collect data from anyone.</p>
+
+    <h2>Changes to This Policy</h2>
+    <p>
+      If this policy changes, the updated version will be published at this URL with a new
+      "Last updated" date. Continued use of RecFlow after changes constitutes acceptance of
+      the updated policy.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions about this privacy policy can be directed to the project repository:<br>
+      <a href="https://github.com/satish-gsa/RecFlow" target="_blank">https://github.com/satish-gsa/RecFlow</a>
+    </p>
+
+    <footer>RecFlow — Free, private, local screen recording.</footer>
+  </div>
+</body>
+</html>

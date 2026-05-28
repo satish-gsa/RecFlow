@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "RecFlow",
+  "version": "1.0.2",
+  "description": "Record screen, camera, or both. Free, no watermarks, no signup required. Unlimited recordings with autosave and crash recovery.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "windows"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

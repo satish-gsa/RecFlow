@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecFlow — Preview</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+      color: #f0f0f8;
+      font-size: 18px;
+      font-weight: 600;
+      opacity: 0.6;
+      letter-spacing: 0.05em;
+    }
+
+    .scale-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #8888aa;
+      font-size: 13px;
+    }
+    .scale-controls button {
+      background: #252540;
+      border: 1px solid #3a3a5a;
+      color: #f0f0f8;
+      border-radius: 6px;
+      padding: 5px 14px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .scale-controls button:hover { background: #3a3a5a; }
+    #scale-value { min-width: 40px; text-align: center; color: #e83232; font-weight: 700; }
+
+    .popup-wrapper {
+      transform-origin: top center;
+      transition: transform 0.2s;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+
+    /* Embed the popup iframe */
+    iframe {
+      width: 360px;
+      height: 560px;
+      border: none;
+      display: block;
+    }
+
+    .hint {
+      color: #555577;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>RecFlow — Popup Preview</h1>
+
+  <div class="scale-controls">
+    <button onclick="changeScale(-0.25)">−</button>
+    <span id="scale-value">1.5×</span>
+    <button onclick="changeScale(0.25)">+</button>
+    <button onclick="setScale(1)">Reset</button>
+    <button onclick="setScale(2)">2×</button>
+    <button onclick="setScale(2.5)">2.5×</button>
+  </div>
+
+  <div class="popup-wrapper" id="wrapper">
+    <iframe src="../popup/popup.html" id="popup-frame"></iframe>
+  </div>
+
+  <p class="hint">
+    Use browser zoom (⌘+/−) or the buttons above to scale for screenshots.<br>
+    Right-click → Inspect to open DevTools for the popup frame.
+  </p>
+
+  <script>
+    let currentScale = 1.5;
+    const wrapper = document.getElementById('wrapper');
+
+    function setScale(s) {
+      currentScale = Math.max(0.5, Math.min(4, s));
+      wrapper.style.transform = `scale(${currentScale})`;
+      document.getElementById('scale-value').textContent = currentScale + '×';
+    }
+
+    function changeScale(delta) {
+      setScale(Math.round((currentScale + delta) * 100) / 100);
+    }
+
+    setScale(1.5);
+  </script>
+</body>
+</html>

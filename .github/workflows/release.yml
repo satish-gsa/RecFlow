@@ -1,0 +1,56 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Build extension zip
+        run: |
+          mkdir -p dist
+          zip -r dist/recflow-${{ steps.version.outputs.VERSION }}.zip \
+            manifest.json \
+            background/ \
+            popup/ \
+            recorder/ \
+            recordings/ \
+            utils/ \
+            icons/ \
+            -x "*.DS_Store"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: RecFlow ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## RecFlow ${{ steps.version.outputs.VERSION }}
+
+            ### Install Instructions
+
+            1. Download **recflow-${{ steps.version.outputs.VERSION }}.zip** from Assets below
+            2. Unzip the file anywhere on your computer
+            3. Open Chrome and go to `chrome://extensions/`
+            4. Enable **Developer mode** (top-right toggle)
+            5. Click **Load unpacked** and select the unzipped folder
+            6. The RecFlow icon appears in your toolbar — click it to start recording!
+
+            ---
+            **Requirements**: Chrome 88+ or any Chromium-based browser (Edge, Brave, etc.)
+          files: dist/recflow-${{ steps.version.outputs.VERSION }}.zip
+          draft: false
+          prerelease: false

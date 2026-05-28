@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecFlow</title>
+  <link rel="stylesheet" href="recorder.css" />
+</head>
+<body>
+
+  <!-- Main preview (screen / camera feed) -->
+  <div id="preview-wrapper" class="preview-wrapper">
+    <video id="preview-video" class="preview-video" muted playsinline autoplay></video>
+
+    <!-- Camera PIP (shown in "both" mode) -->
+    <div id="camera-pip" class="camera-pip" style="display:none" title="Drag to reposition">
+      <video id="camera-video" muted playsinline autoplay></video>
+      <div class="pip-drag-handle">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/>
+          <circle cx="9" cy="12" r="2"/><circle cx="15" cy="12" r="2"/>
+          <circle cx="9" cy="18" r="2"/><circle cx="15" cy="18" r="2"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- No preview placeholder -->
+    <div id="preview-placeholder" class="preview-placeholder hidden">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.2">
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <polyline points="8 21 12 17 16 21"/>
+      </svg>
+      <p>Preview not available</p>
+    </div>
+  </div>
+
+  <!-- Recording indicator (top-left) -->
+  <div id="record-indicator" class="record-indicator hidden">
+    <span id="rec-dot" class="rec-dot"></span>
+    <span class="rec-label">REC</span>
+    <span id="timer" class="rec-timer">00:00</span>
+    <span id="mode-badge" class="mode-badge">SCREEN</span>
+  </div>
+
+  <!-- Bottom controls bar -->
+  <div id="controls-bar" class="controls-bar hidden">
+    <button id="btn-pause" class="ctrl-btn ctrl-pause" title="Pause / Resume">
+      <svg id="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16" rx="1"/>
+        <rect x="14" y="4" width="4" height="16" rx="1"/>
+      </svg>
+      <svg id="icon-resume" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"
+           style="display:none">
+        <polygon points="5 3 19 12 5 21 5 3"/>
+      </svg>
+      <span id="pause-label">Pause</span>
+    </button>
+
+    <button id="btn-stop" class="ctrl-btn ctrl-stop" title="Stop Recording">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="4" y="4" width="16" height="16" rx="2"/>
+      </svg>
+      Stop
+    </button>
+
+    <button id="btn-discard" class="ctrl-btn ctrl-discard" title="Discard Recording">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+        <path d="M10 11v6"/><path d="M14 11v6"/>
+        <path d="M9 6V4h6v2"/>
+      </svg>
+      Discard
+    </button>
+  </div>
+
+  <!-- Countdown overlay -->
+  <div id="overlay-countdown" class="overlay hidden">
+    <div class="overlay-card">
+      <div id="countdown-number" class="countdown-number">3</div>
+      <p class="countdown-label">Recording starts in…</p>
+      <button id="btn-skip-countdown" class="btn-secondary">Start Now</button>
+    </div>
+  </div>
+
+  <!-- Status overlay (requesting permissions, errors) -->
+  <div id="overlay-status" class="overlay hidden">
+    <div class="overlay-card">
+      <div id="status-spinner" class="spinner"></div>
+      <p id="status-message" class="status-message">Setting up…</p>
+      <div id="status-actions" class="overlay-actions hidden">
+        <button id="btn-retry" class="btn-primary">Try Again</button>
+        <button id="btn-close-tab" class="btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save overlay (shown after recording stops) -->
+  <div id="overlay-save" class="overlay hidden">
+    <div class="save-card">
+      <div class="save-preview-wrapper">
+        <video id="save-preview" class="save-preview" controls></video>
+      </div>
+      <div class="save-meta">
+        <h2 class="save-title" id="save-title" contenteditable="true" spellcheck="false">
+          Recording
+        </h2>
+        <div class="save-stats">
+          <span id="save-duration">--:--</span>
+          <span class="dot-sep">·</span>
+          <span id="save-size">-- MB</span>
+        </div>
+      </div>
+      <div class="save-actions">
+        <button id="btn-download" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download
+        </button>
+        <button id="btn-view-recordings" class="btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <polyline points="8 21 12 17 16 21"/>
+          </svg>
+          My Recordings
+        </button>
+        <button id="btn-new-recording" class="btn-ghost">Record Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discard confirm dialog -->
+  <div id="overlay-discard" class="overlay hidden">
+    <div class="overlay-card">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+           stroke="#ff9800" stroke-width="1.5">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <p class="status-message">Discard this recording?</p>
+      <p style="color:#8888aa;font-size:13px;margin-top:6px;">This cannot be undone.</p>
+      <div class="overlay-actions">
+        <button id="btn-confirm-discard" class="btn-danger">Yes, Discard</button>
+        <button id="btn-cancel-discard" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../utils/db.js"></script>
+  <script src="recorder.js"></script>
+</body>
+</html>
